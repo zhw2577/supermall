@@ -3,13 +3,14 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <home-swiper :banners="banners"></home-swiper>
-    <recommend-view :recommends="recommends"></recommend-view>
-    <feature-view/>
-    <tab-control class="tab-control" :titles="['流行','新款','精选']"
-                 @tabClick="tabClick"/>
-    <goods-list :goods="showGoods"/>
-
+    <scroll class="content">
+      <home-swiper :banners="banners"></home-swiper>
+      <recommend-view :recommends="recommends"></recommend-view>
+      <feature-view/>
+      <tab-control class="tab-control" :titles="['流行','新款','精选']"
+                   @tabClick="tabClick"/>
+      <goods-list :goods="showGoods"/>
+    </scroll>
   </div>
 </template>
 
@@ -17,6 +18,7 @@
   import NavBar from 'components/common/navbar/NavBar'
   import TabControl from 'components/content/tabControl/TabControl'
   import GoodsList from 'components/content/goods/GoodsList'
+  import Scroll from 'components/common/scroll/Scroll'
 
   import HomeSwiper from './childComps/HomeSwiper'
   import RecommendView from './childComps/RecommendView'
@@ -30,6 +32,8 @@
       NavBar,
       TabControl,
       GoodsList,
+      Scroll,
+
       HomeSwiper,
       RecommendView,
       FeatureView
@@ -105,7 +109,9 @@
 <style scoped>
   #home {
     padding-top: 44px;
-    padding-bottom: 49px;
+    /*vh 视口高度*/
+    height: 100vh;
+    position: relative;
   }
 
   .home-nav {
@@ -122,5 +128,14 @@
   .tab-control {
     position: sticky;
     top: 44px;
+    z-index: 10;
+  }
+
+  .content {
+    overflow: hidden;
+
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
   }
 </style>
