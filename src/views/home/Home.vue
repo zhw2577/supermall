@@ -3,7 +3,11 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <scroll class="content">
+    <scroll class="content" ref="scroll"
+            :prob-type="3"
+            @scroll="contentScroll"
+            @pullingUp="loadMore"
+            :pull-up-load="true"> <!--传入特定类型需要加冒号-->
       <home-swiper :banners="banners"></home-swiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view/>
@@ -11,6 +15,7 @@
                    @tabClick="tabClick"/>
       <goods-list :goods="showGoods"/>
     </scroll>
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -19,6 +24,7 @@
   import TabControl from 'components/content/tabControl/TabControl'
   import GoodsList from 'components/content/goods/GoodsList'
   import Scroll from 'components/common/scroll/Scroll'
+  import BackTop from 'components/content/backTop/BackTop'
 
   import HomeSwiper from './childComps/HomeSwiper'
   import RecommendView from './childComps/RecommendView'
@@ -33,6 +39,7 @@
       TabControl,
       GoodsList,
       Scroll,
+      BackTop,
 
       HomeSwiper,
       RecommendView,
@@ -47,7 +54,8 @@
           'new': { page: 0, list: [] },
           'sell': { page: 0, list: [] }
         },
-        currentType: 'pop'
+        currentType: 'pop',
+        isShowBackTop: false
       }
     },
     created () {
@@ -82,6 +90,12 @@
         }
       },
 
+      backClick () {
+        this.$refs.scroll.scrollTo(0, 0, 1000)
+      },
+      contentScroll (pos) {
+        this.isShowBackTop = pos.y < -1000
+      },
       /**
        * 网络请求相关方法
        */
@@ -100,7 +114,12 @@
           const goodsList = res.data.list
           this.goods[type].list.push(...goodsList)
           this.goods[type].page += 1
+          this.$refs.scroll.refresh() // scroll 插件在加载完数据后要刷新一下，让插件重新计算界面的高度，如果不刷新，可能会无法下拉
         })
+      },
+      loadMore () {
+        this.getHomeGoods(this.currentType)
+        this.$refs.scroll.finishPullUp()
       }
     }
   }

@@ -16,16 +16,48 @@
         scroll: null
       }
     },
+    props: {
+      probType: {
+        type: Number,
+        default: 0,
+      },
+      pullUpLoad: {
+        type: Boolean,
+        default: false
+      }
+
+    },
     mounted () {
-      console.log(this.$refs.wrapper)
-      // let wrapper = document.querySelector('.wrapper')
-      // this.scroll = new BScroll(wrapper)
       this.scroll = new BScroll(this.$refs.wrapper, {
+        probType: this.probType,
         click: true,
+        pullUpLoad: this.pullUpLoad,
         mouseWheel: true,//开启鼠标滚轮
         disableMouse: false,//启用鼠标拖动
         disableTouch: false//启用手指触摸
+
       })
+
+      // 监听滚动位置
+      this.scroll.on('scroll', (pos) => {
+        this.$emit('scroll', pos)
+      })
+
+      // 监听上拉事件
+      this.scroll.on('pullingUp', () => {
+        this.$emit('pullingUp')
+      })
+    },
+    methods: {
+      scrollTo (x, y, time = 500) {
+        this.scroll.scrollTo(x, y, time)
+      },
+      finishPullUp () {
+        this.scroll.finishPullUp()
+      },
+      refresh(){
+        this.scroll.refresh()
+      },
     }
   }
 </script>
