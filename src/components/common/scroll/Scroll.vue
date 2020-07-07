@@ -38,15 +38,19 @@
 
       })
 
-      // 监听滚动位置
-      this.scroll.on('scroll', (pos) => {
-        this.$emit('scroll', pos)
-      })
+      if (this.probType >= 2) {
+        // 监听滚动位置
+        this.scroll.on('scroll', (pos) => {
+          this.$emit('scroll', pos)
+        })
+      }
 
-      // 监听上拉事件
-      this.scroll.on('pullingUp', () => {
-        this.$emit('pullingUp')
-      })
+      if (this.pullUpLoad) {
+        // 监听上拉事件
+        this.scroll.on('pullingUp', () => {
+          this.$emit('pullingUp')
+        })
+      }
     },
     methods: {
       scrollTo (x, y, time = 500) {
@@ -55,7 +59,7 @@
       finishPullUp () {
         this.scroll.finishPullUp()
       },
-      refresh(){
+      refresh () {
         this.scroll.refresh()
       },
     }
